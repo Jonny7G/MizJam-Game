@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpSpeed = 10f;
     [SerializeField] private float airAccelSpeed;
-    [SerializeField] private float airManueverSpeed;
+    [SerializeField] private float maxAirManueverSpeed;
     [SerializeField, Range(0f, 1f)] private float airDrag;
     [SerializeField] private float stoppingSpeed = 1f;
     [SerializeField] private Vector2 moveAxis = default;
@@ -37,19 +37,17 @@ public class PlayerMovement : MonoBehaviour
         jumpPressed = val;
         //if (groundedState.IsGrounded && !groundedState.IsAirborne)
         //{
-            StartJump();
+        StartJump();
         //}
     }
     private void Update()
     {
         if (groundedState.IsGrounded && !groundedState.IsAirborne) //not jumping
         {
-            Debug.Log("walking");
             GroundMovement();
         }
         else //jumping
         {
-            Debug.Log("jumping");
             Jumping();
         }
     }
@@ -73,12 +71,29 @@ public class PlayerMovement : MonoBehaviour
         AirAcceleration();
     }
     private Vector2 manueverVel;
+    private Vector2 jumpVel;
     private void AirAcceleration()
     {
         float beforeMag = rb.velocity.magnitude;
-        manueverVel = moveAxis * airAccelSpeed;
+        jumpVel = currentJumpDirection * beforeMag;
         Vector2 addVel = moveAxis * airAccelSpeed * Time.deltaTime;
-        rb.velocity = (rb.velocity + addVel).normalized * beforeMag;
+        if (manueverVel.normalized != moveAxis.normalized && moveAxis.normalized != Vector2.zero)
+        {
+            manueverVel = moveAxis.normalized;
+        }
+        else if(addVel!=Vector2.zero)
+        {
+            manueverVel += addVel;
+            if (manueverVel.magnitude > maxAirManueverSpeed)
+            {
+                manueverVel = manueverVel.normalized * maxAirManueverSpeed;
+            }
+        }
+        else
+        {
+            manueverVel = Vector2.MoveTowards(manueverVel, Vector2.zero, Time.deltaTime * 5);
+        }
+        rb.velocity = (jumpVel + manueverVel).normalized * beforeMag;
     }
     private void GroundMovement()
     {
