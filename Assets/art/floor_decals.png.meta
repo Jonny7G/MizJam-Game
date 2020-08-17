@@ -1,13 +1,19 @@
 fileFormatVersion: 2
-guid: 8d9c74b104a34b146ae4b60a473458e5
+guid: f3ee6d5042fbf34418b3a1c4493e7275
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -355382486172595394
-    second: pickups_0
+      213: -4602316872553681194
+    second: floor_decals_0
   - first:
-      213: 2472404345495907046
-    second: pickups_1
+      213: 5556688207639970031
+    second: floor_decals_1
+  - first:
+      213: -684041232141955130
+    second: floor_decals_2
+  - first:
+      213: -3038352924924483487
+    second: floor_decals_3
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -105,7 +111,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pickups_0
+      name: floor_decals_0
       rect:
         serializedVersion: 2
         x: 0
@@ -119,14 +125,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e3b8940038d611bf0800000000000000
-      internalID: -355382486172595394
+      spriteID: 6dea6a340394120c0800000000000000
+      internalID: -4602316872553681194
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pickups_1
+      name: floor_decals_1
       rect:
         serializedVersion: 2
         x: 16
@@ -140,8 +146,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6ea6a6227aebf4220800000000000000
-      internalID: 2472404345495907046
+      spriteID: fe08bf7fb725d1d40800000000000000
+      internalID: 5556688207639970031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: floor_decals_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6cf4572af1cc186f0800000000000000
+      internalID: -684041232141955130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: floor_decals_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1686b97dc1a95d5d0800000000000000
+      internalID: -3038352924924483487
       vertices: []
       indices: 
       edges: []
