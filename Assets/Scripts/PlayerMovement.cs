@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 jumpVel;
     private GrappleInstance currentGrapple;
     private bool grappling = false;
+    private float grappleDir;
     private void Start()
     {
         controls = new Controls();
@@ -44,11 +45,16 @@ public class PlayerMovement : MonoBehaviour
     }
     private void StartGrapple()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, moveAxis, grappleDistance, wallMask);
-        if (hit)
+        if (rb.velocity.magnitude > 0)
         {
-            currentGrapple = new GrappleInstance(hit.normal, hit.point, hit.distance);
-            grappling = true;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, moveAxis, grappleDistance, wallMask);
+            if (hit)
+            {
+                currentGrapple = new GrappleInstance(hit.normal, hit.point, hit.distance);
+                grappleDir = Mathf.Sign(currentGrapple.GetAngle((Vector2)transform.position + rb.velocity) - currentGrapple.GetAngle(transform.position));
+
+                grappling = true;
+            }
         }
     }
     private void StopGrapple()
@@ -85,10 +91,10 @@ public class PlayerMovement : MonoBehaviour
         }
         if (grappling)
         {
-            rb.velocity = Quaternion.Euler(0, 0, 90 * Mathf.Sign(currentGrapple.GetAngle((Vector2)transform.position + rb.velocity))) * //lol
-                (currentGrapple.Position - (Vector2)transform.position).normalized * rb.velocity.magnitude;
+            Vector2 dirToGrapple = (currentGrapple.Position - (Vector2)transform.position).normalized;
+            //float swingDir = Mathf.Sign(currentGrapple.GetFuturePos(transform.position,));
+            rb.velocity = Quaternion.Euler(0, 0, 90 * grappleDir) * dirToGrapple * rb.velocity.magnitude;
 
-            Debug.Log(Mathf.Sign(currentGrapple.GetAngle((Vector2)transform.position + rb.velocity)));
             currentJumpDirection = rb.velocity.normalized;
         }
     }
@@ -177,8 +183,11 @@ public class GrappleInstance
         float y = Mathf.Cos(Mathf.Deg2Rad * angle);
         x *= Distance;
         y *= Distance;
+
         float rotation = Vector3.SignedAngle(Vector2.up, UpVector, Vector3.forward);
-        return ((Vector2)(Quaternion.Euler(0, 0, rotation) * new Vector2(x, y)) + Position);
+        Vector2 orientedToUpVect = Quaternion.Euler(0, 0, rotation) * new Vector2(x, y);
+
+        return (orientedToUpVect + Position);
     }
     public Vector2 GetPosition(Vector2 pos)
     {
@@ -187,6 +196,7 @@ public class GrappleInstance
     public float GetAngle(Vector2 pos)
     {
         Vector2 dirToPos = (pos - Position).normalized;
+        Debug.Log(Vector3.SignedAngle(dirToPos, UpVector, Vector3.forward));
         return Vector3.SignedAngle(dirToPos, UpVector, Vector3.forward);
     }
     public bool IsOutRange(Vector2 testPos)
