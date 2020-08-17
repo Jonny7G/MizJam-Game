@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private LayerMask wallMask;
+    [SerializeField] private float grappleDistance;
     [SerializeField] private Rigidbody2D rb = default;
     [SerializeField] private GroundedStateHandler groundedState = default;
     [SerializeField] private Transform playerSprite = default;
@@ -19,13 +19,20 @@ public class PlayerMovement : MonoBehaviour
     private Controls controls;
     private bool jumpPressed;
     private Vector2 currentJumpDirection;
-
+    private Vector2 manueverVel;
+    private Vector2 jumpVel;
+    private GrappleInstance currentGrapple;
+    //private Vector2 grapplePoint;
+    //private float currentGrappleDist;
+    private bool grappling = false;
     private void Start()
     {
         controls = new Controls();
         controls.Player.Movement.performed += SetMoveAxis;
         controls.Player.Jump.started += (x) => SetJump(true);
         controls.Player.Jump.canceled += (x) => SetJump(false);
+        controls.Player.Action.started += (x) => StartGrapple();
+        controls.Player.Action.canceled += (x) => StopGrapple();
         controls.Enable();
     }
     private void SetMoveAxis(InputAction.CallbackContext context)
@@ -40,16 +47,50 @@ public class PlayerMovement : MonoBehaviour
         StartJump();
         //}
     }
+    private void StartGrapple()
+    {
+        Debug.Log("grappled");
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, moveAxis, grappleDistance, wallMask);
+        if (hit)
+        {
+            currentGrapple = new GrappleInstance(-hit.normal, hit.point, hit.distance);
+            //grapplePoint = hit.point;
+            //currentGrappleDist = hit.distance;
+            grappling = true;
+        }
+    }
+    private void StopGrapple()
+    {
+        grappling = false;
+    }
     private void Update()
     {
         if (groundedState.IsGrounded && !groundedState.IsAirborne) //not jumping
         {
             GroundMovement();
         }
-        else //jumping
+        if (grappling)//jumping
+        {
+            Grappling();
+        }
+        else
         {
             Jumping();
         }
+    }
+    private void Grappling()
+    {
+        //if (Vector2.Distance(transform.position, grapplePoint) > currentGrappleDist)
+        //{
+        //    Vector2 dir = ((Vector2)transform.position - grapplePoint).normalized;
+        //    transform.position = grapplePoint + dir * currentGrappleDist;
+
+        //    Vector2 nextPos = rb.velocity + (Vector2)transform.position;
+        //    nextPos = grapplePoint + (nextPos - grapplePoint).normalized * currentGrappleDist;
+
+        //    rb.velocity = (nextPos - (Vector2)transform.position).normalized * rb.velocity.magnitude;
+        //    currentJumpDirection = rb.velocity.normalized;
+        //}
     }
     private void FixedUpdate()
     {
@@ -70,8 +111,7 @@ public class PlayerMovement : MonoBehaviour
         }
         AirAcceleration();
     }
-    private Vector2 manueverVel;
-    private Vector2 jumpVel;
+
     private void AirAcceleration()
     {
         float beforeMag = rb.velocity.magnitude;
@@ -81,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
         {
             manueverVel = moveAxis.normalized;
         }
-        else if(addVel!=Vector2.zero)
+        else if (addVel != Vector2.zero)
         {
             manueverVel += addVel;
             if (manueverVel.magnitude > maxAirManueverSpeed)
@@ -112,6 +152,35 @@ public class PlayerMovement : MonoBehaviour
         currentJumpDirection = Vector2.zero;
         rb.velocity = Vector2.zero;
     }
+    private void OnDrawGizmos()
+    {
+        if (grappling)
+        {
+            Gizmos.color = Color.green;
+            //Gizmos.DrawLine(transform.position, grapplePoint);
+        }
+    }
 
+}
+public class GrappleInstance
+{
+    public Vector2 UpVector;
+    public Vector2 Position;
+    public float Distance;
 
+    public GrappleInstance(Vector2 upVector, Vector2 position, float distance)
+    {
+        this.UpVector = upVector;
+        this.Position = position;
+        this.Distance = distance;
+    }
+    private Vector2 GetLocal(float angle)
+    {
+        float x = Mathf.Sin(Mathf.Deg2Rad * angle);
+        float y = Mathf.Cos(Mathf.Deg2Rad * angle);
+        x *= Distance;
+        y *= Distance;
+        float rotation = Vector3.SignedAngle(Vector2.up, UpVector, Vector3.forward);
+        return Quaternion.Euler(0, 0, rotation) * new Vector2(x, y);
+    }
 }
