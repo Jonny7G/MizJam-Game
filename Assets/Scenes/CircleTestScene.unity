@@ -152,7 +152,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radius: 5
   circlingObj: {fileID: 1464147412}
-  angle: 0
+  testAngle: 0
+  pos: {x: 0, y: 0}
 --- !u!4 &1095740691
 Transform:
   m_ObjectHideFlags: 0
@@ -161,7 +162,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1095740689}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.7592434, y: 0.34295794, z: -22.301758}
+  m_LocalPosition: {x: 3.43, y: -0.67, z: -22.301758}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

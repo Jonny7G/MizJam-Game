@@ -22,8 +22,6 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 manueverVel;
     private Vector2 jumpVel;
     private GrappleInstance currentGrapple;
-    //private Vector2 grapplePoint;
-    //private float currentGrappleDist;
     private bool grappling = false;
     private void Start()
     {
@@ -42,10 +40,7 @@ public class PlayerMovement : MonoBehaviour
     private void SetJump(bool val)
     {
         jumpPressed = val;
-        //if (groundedState.IsGrounded && !groundedState.IsAirborne)
-        //{
         StartJump();
-        //}
     }
     private void StartGrapple()
     {
@@ -53,9 +48,7 @@ public class PlayerMovement : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, moveAxis, grappleDistance, wallMask);
         if (hit)
         {
-            currentGrapple = new GrappleInstance(-hit.normal, hit.point, hit.distance);
-            //grapplePoint = hit.point;
-            //currentGrappleDist = hit.distance;
+            currentGrapple = new GrappleInstance(hit.normal, hit.point, hit.distance);
             grappling = true;
         }
     }
@@ -80,17 +73,10 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Grappling()
     {
-        //if (Vector2.Distance(transform.position, grapplePoint) > currentGrappleDist)
-        //{
-        //    Vector2 dir = ((Vector2)transform.position - grapplePoint).normalized;
-        //    transform.position = grapplePoint + dir * currentGrappleDist;
-
-        //    Vector2 nextPos = rb.velocity + (Vector2)transform.position;
-        //    nextPos = grapplePoint + (nextPos - grapplePoint).normalized * currentGrappleDist;
-
-        //    rb.velocity = (nextPos - (Vector2)transform.position).normalized * rb.velocity.magnitude;
-        //    currentJumpDirection = rb.velocity.normalized;
-        //}
+        if (currentGrapple.IsOutRange(transform.position))
+        {
+            transform.position = currentGrapple.GetPosition(transform.position);
+        }
     }
     private void FixedUpdate()
     {
@@ -157,7 +143,7 @@ public class PlayerMovement : MonoBehaviour
         if (grappling)
         {
             Gizmos.color = Color.green;
-            //Gizmos.DrawLine(transform.position, grapplePoint);
+            Gizmos.DrawLine(transform.position, currentGrapple.Position);
         }
     }
 
@@ -174,13 +160,26 @@ public class GrappleInstance
         this.Position = position;
         this.Distance = distance;
     }
-    private Vector2 GetLocal(float angle)
+    public Vector2 GetPosition(float angle)
     {
         float x = Mathf.Sin(Mathf.Deg2Rad * angle);
         float y = Mathf.Cos(Mathf.Deg2Rad * angle);
         x *= Distance;
         y *= Distance;
         float rotation = Vector3.SignedAngle(Vector2.up, UpVector, Vector3.forward);
-        return Quaternion.Euler(0, 0, rotation) * new Vector2(x, y);
+        return ((Vector2)(Quaternion.Euler(0, 0, rotation) * new Vector2(x, y)) + Position);
+    }
+    public Vector2 GetPosition(Vector2 pos)
+    {
+        return GetPosition(GetAngle(pos));
+    }
+    public float GetAngle(Vector2 pos)
+    {
+        Vector2 dirToPos = (pos - Position).normalized;
+        return Vector3.SignedAngle(dirToPos, UpVector, Vector3.forward);
+    }
+    public bool IsOutRange(Vector2 testPos)
+    {
+        return Vector2.Distance(testPos, Position) > Distance;
     }
 }
