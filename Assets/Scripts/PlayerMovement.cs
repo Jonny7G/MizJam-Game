@@ -44,7 +44,6 @@ public class PlayerMovement : MonoBehaviour
     }
     private void StartGrapple()
     {
-        Debug.Log("grappled");
         RaycastHit2D hit = Physics2D.Raycast(transform.position, moveAxis, grappleDistance, wallMask);
         if (hit)
         {
@@ -83,6 +82,14 @@ public class PlayerMovement : MonoBehaviour
         if (groundedState.IsAirborne && timeBeforeDrag.TimerEnded)
         {
             rb.velocity *= airDrag;
+        }
+        if (grappling)
+        {
+            rb.velocity = Quaternion.Euler(0, 0, 90 * Mathf.Sign(currentGrapple.GetAngle((Vector2)transform.position + rb.velocity))) * //lol
+                (currentGrapple.Position - (Vector2)transform.position).normalized * rb.velocity.magnitude;
+
+            Debug.Log(Mathf.Sign(currentGrapple.GetAngle((Vector2)transform.position + rb.velocity)));
+            currentJumpDirection = rb.velocity.normalized;
         }
     }
     private void Jumping()
@@ -159,6 +166,10 @@ public class GrappleInstance
         this.UpVector = upVector;
         this.Position = position;
         this.Distance = distance;
+    }
+    public Vector2 GetFuturePos(Vector2 pos, float angle)
+    {
+        return GetPosition(GetAngle(pos) + angle);
     }
     public Vector2 GetPosition(float angle)
     {
