@@ -30,6 +30,13 @@ public class GrappleInstance
 
         return (orientedToUpVect + Position);
     }
+    public Vector2 GetSwingVelocityDirection(float direction, Vector2 pos)
+    {
+        Vector2 dirToGrapple = (Position - pos).normalized;
+        Vector2 swingVel = Quaternion.Euler(0, 0, 90 * direction) * dirToGrapple;
+
+        return swingVel;
+    }
     public Vector2 GetPosition(Vector2 pos)
     {
         return GetPosition(GetAngle(pos));

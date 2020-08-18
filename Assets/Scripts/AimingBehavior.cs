@@ -14,7 +14,7 @@ public class AimingBehavior : MonoBehaviour
     {
         controls = new Controls();
         controls.Player.MousePosition.performed += SetMousePosition;
-        controls.Player.Escape.started += (x) => { Cursor.visible = !Cursor.visible; };
+        controls.Player.Escape.started += (x) => { Debug.Break(); };
         controls.Enable();
 
         Cursor.visible = false;
