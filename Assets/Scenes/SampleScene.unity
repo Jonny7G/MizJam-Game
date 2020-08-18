@@ -3101,7 +3101,7 @@ MonoBehaviour:
   grapplePullAccel: 120
   maxGrappleSpeed: 360
   grappleSpeed: 0
-  grappleAirDrag: 0.955
+  grappleAirDrag: 0.985
   aiming: {fileID: 2017071859}
   wallMask:
     serializedVersion: 2

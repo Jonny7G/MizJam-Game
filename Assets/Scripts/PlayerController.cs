@@ -132,14 +132,11 @@ public class PlayerController : MonoBehaviour
                 }
                 float dir = -Mathf.Sign(diff);
                 float speed = Mathf.Abs(diff) / 90;
-                //if (Mathf.Sign(grappleSpeed) != Mathf.Sign(dir))
-                //{
                 grappleSpeed += dir * grappleGravity * Time.deltaTime * speed;
 
-                if (MoveAxis.x == 0)
-                {
+                //if (MoveAxis.x == 0)
+                //{
                     grappleSpeed *= grappleAirDrag;
-                }
                 //}
             }
             if (!isAgainstWall)
@@ -356,15 +353,15 @@ public class PlayerController : MonoBehaviour
     }
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, Vector2.down * toGroundHeight);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawRay((Vector2)transform.position + Vector2.right * 0.02f, Vector2.down * groundCheckDistance);
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(transform.position, groundCheckSize);
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireCube((Vector2)transform.position + wallCheckOffset, wallCheckSize);
-        Gizmos.DrawLine(transform.position + (Vector3)wallCheckOffset, transform.position + (Vector3)wallCheckOffset + Vector3.right * wallCheckDist);
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawRay(transform.position, Vector2.down * toGroundHeight);
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawRay((Vector2)transform.position + Vector2.right * 0.02f, Vector2.down * groundCheckDistance);
+        //Gizmos.color = Color.green;
+        //Gizmos.DrawWireCube(transform.position, groundCheckSize);
+        //Gizmos.color = Color.white;
+        //Gizmos.DrawWireCube((Vector2)transform.position + wallCheckOffset, wallCheckSize);
+        //Gizmos.DrawLine(transform.position + (Vector3)wallCheckOffset, transform.position + (Vector3)wallCheckOffset + Vector3.right * wallCheckDist);
         if (grappling)
         {
             Gizmos.color = Color.green;
