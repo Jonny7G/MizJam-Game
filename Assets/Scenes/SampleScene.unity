@@ -3087,6 +3087,7 @@ MonoBehaviour:
   toGroundHeight: 0.7
   groundCheckDistance: 2
   groundCheckSize: {x: 0.5, y: 0.15}
+  maxSwingAngle: 100
   grappleStartSpeed: 15
   grappleJumpSpeed: 15
   wallCheckDist: 0.65
@@ -3107,6 +3108,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 513
   rb: {fileID: 2017071858}
+  velocity: {x: 0, y: 0}
 --- !u!1 &2032069372
 GameObject:
   m_ObjectHideFlags: 0

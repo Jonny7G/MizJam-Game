@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 2f;
     [SerializeField] private Vector2 groundCheckSize = new Vector2(0.62f, 0.15f);
     [Header("Grapple")]
+    [SerializeField] private float maxSwingAngle;
     [SerializeField] private float grappleStartSpeed;
     [SerializeField] private float grappleJumpSpeed;
     [SerializeField] private float wallCheckDist = 1f;
@@ -45,6 +46,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float grappleDistance;
     [SerializeField] private float minGrappleDist;
     [SerializeField] private float grapplePullAccel;
+
     public float maxGrappleSpeed;
     public float grappleSpeed;
     [Range(0f, 1f)] public float grappleAirDrag;
@@ -52,6 +54,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask wallMask;
     [Space(20)]
     public Rigidbody2D rb = default;
+    public Vector2 velocity;
     public Vector2 MoveAxis { get; private set; }
     public bool Jumping { get; private set; }
     public bool Grounded { get; private set; }
@@ -81,22 +84,24 @@ public class PlayerController : MonoBehaviour
             {
                 currentGrapple = new GrappleInstance(hit.normal, hit.point, hit.distance);
 
-                //grappleDir = Mathf.Sign(currentGrapple.GetAngle((Vector2)transform.position + rb.velocity) - currentGrapple.GetAngle(transform.position));
-                //grappleDir = -Mathf.Sign(rb.velocity.x);
                 if (grappleSpeed == 0)
-                    grappleSpeed = rb.velocity.x;
+                    grappleSpeed = rb.velocity.x + Mathf.Sign(rb.velocity.x) * grappleStartSpeed;
                 else
                 {
                     grappleSpeed = (Mathf.Abs(grappleSpeed) + grappleStartSpeed) * -Mathf.Sign(rb.velocity.x);
                 }
                 grappling = true;
+                grapplegravDir = Mathf.Sign(grappleSpeed);
             }
         }
     }
     private void StopGrapple()
     {
         grappling = false;
-        //rb.velocity = currentGrapple.GetSwingVelocityDirection(-grappleSpeed, transform.position)*grappleJumpSpeed;
+        if (rb.velocity.y < 0)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, 0);
+        }
     }
     private void ApplyGrappleForce(float direction, float speed)
     {
@@ -115,6 +120,7 @@ public class PlayerController : MonoBehaviour
 
         isAgainstWall = isWall;
     }
+    private float grapplegravDir;
     private void Grappling()
     {
         UpdateWallState();
@@ -123,43 +129,51 @@ public class PlayerController : MonoBehaviour
             float playerAngle = currentGrapple.GetAngle(transform.position);
             float gravAngle = currentGrapple.GetAngle(currentGrapple.Position + currentGrapple.Distance * Vector2.down);
             float diff = (playerAngle - gravAngle);
+            float gravDir = -Mathf.Sign(diff);
 
             if (Mathf.Abs(diff) != 0)
             {
-                if (Mathf.Abs(diff) > 130)
-                {
-                    grappling = false;
-                }
-                float dir = -Mathf.Sign(diff);
                 float speed = Mathf.Abs(diff) / 90;
-                grappleSpeed += dir * grappleGravity * Time.deltaTime * speed;
-
+                grappleSpeed += gravDir * grappleGravity * Time.deltaTime * speed;
+                if (Mathf.Sign(MoveAxis.x) != 0)
+                {
+                    if(-Mathf.Sign(MoveAxis.x) == gravDir && Mathf.Abs(diff) < maxSwingAngle)
+                    {
+                        grappleSpeed += gravDir * Time.deltaTime * grapplePullAccel;
+                    }
+                }
                 //if (MoveAxis.x == 0)
                 //{
-                    grappleSpeed *= grappleAirDrag;
+                grappleSpeed *= grappleAirDrag;
                 //}
-            }
-            if (!isAgainstWall)
-            {
-                if (Mathf.Sign(grappleSpeed) != -MoveAxis.x && MoveAxis.x != 0)
+                if (Mathf.Abs(grappleSpeed) > maxGrappleSpeed)
                 {
-                    grappleSpeed = 0;
+                    grappleSpeed = Mathf.Sign(grappleSpeed) * maxGrappleSpeed;
                 }
-                grappleSpeed -= MoveAxis.x * grapplePullAccel * Time.deltaTime;
+                if (grappleSpeed != 0)
+                {
+                    ApplyGrappleForce(Mathf.Sign(grappleSpeed), Mathf.Abs(grappleSpeed));
+                }
             }
+            if (Mathf.Abs(diff) > 120)
+            {
+                grappling = false;
+            }
+            //if (!isAgainstWall)
+            //{
+            //    if (Mathf.Sign(grappleSpeed) != -MoveAxis.x && MoveAxis.x != 0)
+            //    {
+            //        grappleSpeed = 0;
+            //    }
+            //    //if (Mathf.Abs(diff) < 45 || -Mathf.Sign(MoveAxis.x) == gravDir)
+            //    grappleSpeed -= MoveAxis.x * grapplePullAccel * Time.deltaTime;
+            //}
             transform.position = currentGrapple.GetPosition(transform.position);
-            if (currentGrapple.Distance < minGrappleDist)
-            {
-                //grappling = false;
-            }
-            if (Mathf.Abs(grappleSpeed) > maxGrappleSpeed)
-            {
-                grappleSpeed = Mathf.Sign(grappleSpeed) * maxGrappleSpeed;
-            }
-            if (grappleSpeed != 0)
-            {
-                ApplyGrappleForce(Mathf.Sign(grappleSpeed), Mathf.Abs(grappleSpeed));
-            }
+            //if (currentGrapple.Distance < minGrappleDist)
+            //{
+            //    //grappling = false;
+            //}
+            
             Debug.DrawRay(transform.position, rb.velocity.normalized, Color.red);
         }
         else
@@ -211,6 +225,7 @@ public class PlayerController : MonoBehaviour
 
         }
         JumpBehavior();
+        velocity = rb.velocity;
     }
     private bool IsGrounded()
     {
@@ -226,10 +241,6 @@ public class PlayerController : MonoBehaviour
     }
     private void ApplyGravity()
     {
-        //if (grappling && rb.velocity.y > -maxGrappleGravityPull)
-        //{
-        //    rb.velocity += Vector2.down * grappleGravity * Time.deltaTime;
-        //}
         if (rb.velocity.y > -maxGravityPull && !grappling)
         {
             rb.velocity += Vector2.down * gravity * Time.deltaTime;
