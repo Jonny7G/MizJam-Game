@@ -4,8 +4,11 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private LayerMask wallMask;
     [SerializeField] private float grappleDistance;
+    [SerializeField] private float minGrappleDist;
+    [SerializeField] private float grapplePullSpeed;
     [SerializeField] private Rigidbody2D rb = default;
     [SerializeField] private GroundedStateHandler groundedState = default;
+    [SerializeField] private AimingBehavior aiming;
     [SerializeField] private Transform playerSprite = default;
     [SerializeField] private Timer timeBeforeDrag = default;
     [SerializeField] private float moveSpeed = 5f;
@@ -47,9 +50,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if (rb.velocity.magnitude > 0)
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, moveAxis, grappleDistance, wallMask);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, aiming.GetAimDir(), grappleDistance, wallMask);
             if (hit)
             {
+                Debug.Log("START DIST: "+hit.distance);
                 currentGrapple = new GrappleInstance(hit.normal, hit.point, hit.distance);
                 grappleDir = Mathf.Sign(currentGrapple.GetAngle((Vector2)transform.position + rb.velocity) - currentGrapple.GetAngle(transform.position));
 
@@ -80,7 +84,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (currentGrapple.IsOutRange(transform.position))
         {
-            transform.position = currentGrapple.GetPosition(transform.position);
+           // transform.position = currentGrapple.GetPosition(transform.position);
+        }
+        if (currentGrapple.Distance < minGrappleDist)
+        {
+            grappling = false;
         }
     }
     private void FixedUpdate()
@@ -91,12 +99,25 @@ public class PlayerMovement : MonoBehaviour
         }
         if (grappling)
         {
-            Vector2 dirToGrapple = (currentGrapple.Position - (Vector2)transform.position).normalized;
-            //float swingDir = Mathf.Sign(currentGrapple.GetFuturePos(transform.position,));
-            rb.velocity = Quaternion.Euler(0, 0, 90 * grappleDir) * dirToGrapple * rb.velocity.magnitude;
-
-            currentJumpDirection = rb.velocity.normalized;
+            if (currentGrapple.IsOutRange(transform.position))
+            {
+                currentGrapple.Distance -= grapplePullSpeed * Time.deltaTime;
+                if (currentGrapple.Distance < minGrappleDist)
+                {
+                    Debug.Log(currentGrapple.Distance);
+                    grappling = false;
+                }
+                Vector2 dirToGrapple = (currentGrapple.Position - (Vector2)transform.position).normalized;
+                rb.velocity = Quaternion.Euler(0, 0, 90 * grappleDir) * dirToGrapple * rb.velocity.magnitude;
+               // Debug.DrawRay(transform.position, rb.velocity.normalized, Color.red, 1f);
+                currentJumpDirection = rb.velocity.normalized;
+            }
+            else
+            {
+                currentGrapple.Distance = Vector2.Distance(transform.position, currentGrapple.Position);
+            }
         }
+        
     }
     private void Jumping()
     {
@@ -196,7 +217,6 @@ public class GrappleInstance
     public float GetAngle(Vector2 pos)
     {
         Vector2 dirToPos = (pos - Position).normalized;
-        Debug.Log(Vector3.SignedAngle(dirToPos, UpVector, Vector3.forward));
         return Vector3.SignedAngle(dirToPos, UpVector, Vector3.forward);
     }
     public bool IsOutRange(Vector2 testPos)
