@@ -6813,10 +6813,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2017071855}
   - component: {fileID: 2017071856}
+  - component: {fileID: 2017071859}
   - component: {fileID: 2017071854}
   - component: {fileID: 2017071858}
   - component: {fileID: 2017071857}
-  - component: {fileID: 2017071859}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -6875,7 +6875,8 @@ MonoBehaviour:
     m_Bits: 1
   grappleDistance: 8
   minGrappleDist: 1
-  grapplePullSpeed: 0
+  grapplePullSpeed: 1
+  grapplePullAccel: 6
   rb: {fileID: 2017071858}
   groundedState: {fileID: 2017071854}
   aiming: {fileID: 2017071859}
