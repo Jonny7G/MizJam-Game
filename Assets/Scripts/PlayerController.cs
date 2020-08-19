@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     /// Vector2 == direction jumping away from
     /// </summary>
     public System.Action<Vector2> OnJump { get; set; }
+    public System.Action OnGrappleShoot { get; set; }
     [Header("Movement")]
     [SerializeField] private float gravity = 25f;
     [SerializeField] private float maxGravityPull = 15f;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 2f;
     [SerializeField] private Vector2 groundCheckSize = new Vector2(0.62f, 0.15f);
     [Header("Grapple")]
+    [SerializeField] private float maxGrappleAirSpeed;
     [SerializeField] private float maxRetractSpeed;
     [SerializeField] private float maxTugSpeed;
     [SerializeField] private float maxTugAngle;
@@ -89,6 +91,7 @@ public class PlayerController : MonoBehaviour
                 grappleDrawer.SetLines(currentGrapple.Position);
                 grappling = true;
                 pulling = false;
+                OnGrappleShoot?.Invoke();
             }
         }
     }
@@ -120,9 +123,11 @@ public class PlayerController : MonoBehaviour
             grappling = false;
             if (rb.velocity.y < 0)
             {
-                rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+                rb.velocity = new Vector2(rb.velocity.x, 1);
             }
-            rb.velocity = new Vector2(-grappleSpeed, rb.velocity.y);
+            float vel = -grappleSpeed;
+            vel = Mathf.Clamp(vel, -maxGrappleAirSpeed, maxGrappleAirSpeed);
+            rb.velocity = new Vector2(vel, rb.velocity.y);
             grappleDrawer.ClearLines();
         }
     }
