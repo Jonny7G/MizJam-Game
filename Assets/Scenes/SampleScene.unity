@@ -3102,13 +3102,15 @@ MonoBehaviour:
   grapplePullAccel: 120
   maxGrappleSpeed: 360
   grappleSpeed: 0
-  grappleAirDrag: 0.985
+  grappleAirDrag: 0.995
   aiming: {fileID: 2017071859}
   wallMask:
     serializedVersion: 2
     m_Bits: 513
   rb: {fileID: 2017071858}
   velocity: {x: 0, y: 0}
+  swingVell: {x: 0, y: 0}
+  gravDirr: 0
 --- !u!1 &2032069372
 GameObject:
   m_ObjectHideFlags: 0
