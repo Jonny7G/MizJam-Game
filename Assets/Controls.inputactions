@@ -44,6 +44,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Action 2",
+                    "type": "Button",
+                    "id": "e584e324-0805-46da-89be-7fee1f70384c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -181,17 +189,6 @@
                 },
                 {
                     "name": "",
-                    "id": "d8ee6a8d-c99a-4799-b78b-4ac7fb0a8dbf",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Action",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "736b9717-6e11-4906-a6e4-992fb55f6e19",
                     "path": "<Mouse>/position",
                     "interactions": "",
@@ -209,6 +206,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3171f29a-4496-47c7-98ca-27353cbe8779",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Action 2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

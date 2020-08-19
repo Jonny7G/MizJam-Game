@@ -57,6 +57,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Action 2"",
+                    ""type"": ""Button"",
+                    ""id"": ""e584e324-0805-46da-89be-7fee1f70384c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -194,17 +202,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""d8ee6a8d-c99a-4799-b78b-4ac7fb0a8dbf"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Action"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""736b9717-6e11-4906-a6e4-992fb55f6e19"",
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
@@ -224,6 +221,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Escape"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3171f29a-4496-47c7-98ca-27353cbe8779"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Action 2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -237,6 +245,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Player_Action = m_Player.FindAction("Action", throwIfNotFound: true);
         m_Player_MousePosition = m_Player.FindAction("MousePosition", throwIfNotFound: true);
         m_Player_Escape = m_Player.FindAction("Escape", throwIfNotFound: true);
+        m_Player_Action2 = m_Player.FindAction("Action 2", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -291,6 +300,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Action;
     private readonly InputAction m_Player_MousePosition;
     private readonly InputAction m_Player_Escape;
+    private readonly InputAction m_Player_Action2;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
@@ -300,6 +310,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Action => m_Wrapper.m_Player_Action;
         public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
         public InputAction @Escape => m_Wrapper.m_Player_Escape;
+        public InputAction @Action2 => m_Wrapper.m_Player_Action2;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -324,6 +335,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Escape.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
                 @Escape.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
                 @Escape.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
+                @Action2.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAction2;
+                @Action2.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAction2;
+                @Action2.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAction2;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -343,6 +357,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Escape.started += instance.OnEscape;
                 @Escape.performed += instance.OnEscape;
                 @Escape.canceled += instance.OnEscape;
+                @Action2.started += instance.OnAction2;
+                @Action2.performed += instance.OnAction2;
+                @Action2.canceled += instance.OnAction2;
             }
         }
     }
@@ -354,5 +371,6 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnAction(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
         void OnEscape(InputAction.CallbackContext context);
+        void OnAction2(InputAction.CallbackContext context);
     }
 }
