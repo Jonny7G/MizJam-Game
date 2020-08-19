@@ -3088,19 +3088,19 @@ MonoBehaviour:
   groundCheckDistance: 2
   groundCheckSize: {x: 0.5, y: 0.15}
   maxSwingAngle: 100
-  grappleStartSpeed: 15
+  grappleStartSpeed: 3
   grappleJumpSpeed: 15
   wallCheckDist: 0.65
   wallCheckSize: {x: 0.35, y: 0.35}
   wallCheckOffset: {x: 0, y: -0.18}
-  grappleGravity: 200
+  grappleGravity: 15
   maxGrappleVelocity: 17
   maxGrappleGravityPull: 5
   swingingGrappleGrav: 25
   grappleDistance: 8
   minGrappleDist: 0.6
-  grapplePullAccel: 120
-  maxGrappleSpeed: 360
+  grapplePullAccel: 5
+  maxGrappleSpeed: 55
   grappleSpeed: 0
   grappleAirDrag: 0.995
   aiming: {fileID: 2017071859}
@@ -3108,9 +3108,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 513
   rb: {fileID: 2017071858}
-  velocity: {x: 0, y: 0}
-  swingVell: {x: 0, y: 0}
-  gravDirr: 0
+  velocity: {x: -0.0029884141, y: 0.00003811518}
+  swingVell: {x: -0.0029884141, y: 0.00003811518}
+  gravDirr: -1
 --- !u!1 &2032069372
 GameObject:
   m_ObjectHideFlags: 0

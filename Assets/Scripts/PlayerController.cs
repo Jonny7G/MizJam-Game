@@ -84,35 +84,26 @@ public class PlayerController : MonoBehaviour
             {
                 currentGrapple = new GrappleInstance(hit.normal, hit.point, hit.distance);
 
-                if (grappleSpeed == 0)
-                {
-                    grappleSpeed = Mathf.Sign(rb.velocity.x) * grappleStartSpeed;
-                    //grappleSpeed = rb.velocity.x + Mathf.Sign(rb.velocity.x) * grappleStartSpeed;
-                }
-                else
-                {
-                    //grappleSpeed = (Mathf.Abs(grappleSpeed) + grappleStartSpeed) * -Mathf.Sign(rb.velocity.x);
-                }
+                grappleSpeed = -Mathf.Sign(rb.velocity.x) * (Mathf.Abs(rb.velocity.x) + grappleStartSpeed);
                 grappling = true;
-                rb.velocity = new Vector2(rb.velocity.x,0);
             }
         }
     }
     private void StopGrapple()
     {
-        //grappling = false;
-        //if (rb.velocity.y < 0)
-        //{
-        //    rb.velocity = new Vector2(rb.velocity.x, 0);
-        //}
+        grappling = false;
+        if (rb.velocity.y < 0)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, 0);
+        }
     }
     public Vector2 swingVell;
     private void ApplyGrappleForce(float direction, float speed)
     {
         Vector2 swingVel = currentGrapple.GetSwingVelocityDirection(direction, transform.position);
-        swingVell = swingVel.normalized*speed;
+        swingVell = swingVel.normalized * speed;
         rb.velocity = swingVel.normalized * speed;
-        
+
         //if (rb.velocity.magnitude > maxGrappleVelocity)
         //{
         //    rb.velocity = rb.velocity.normalized * maxGrappleVelocity;
@@ -131,6 +122,7 @@ public class PlayerController : MonoBehaviour
         UpdateWallState();
         if (currentGrapple.IsOutRange(transform.position))
         {
+            Debug.Log("swiging");
             HandleSwingVelocity();
         }
         else
