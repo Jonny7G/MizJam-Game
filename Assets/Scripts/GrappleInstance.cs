@@ -33,8 +33,7 @@ public class GrappleInstance
     public Vector2 GetSwingVelocityDirection(float direction, Vector2 pos)
     {
         Vector2 dirToGrapple = (Position - pos).normalized;
-        Vector2 perpendicularDirection = new Vector2(-dirToGrapple.y, dirToGrapple.x)*direction;
-        //Vector2 swingVel = Quaternion.Euler(0, 0, 90 * direction) * dirToGrapple;
+        Vector2 perpendicularDirection = new Vector2(-dirToGrapple.y, dirToGrapple.x) * direction;
 
         return perpendicularDirection;
     }
