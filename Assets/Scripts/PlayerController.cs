@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 2f;
     [SerializeField] private Vector2 groundCheckSize = new Vector2(0.62f, 0.15f);
     [Header("Grapple")]
+    [SerializeField] private Timer grappleTimer;
     [SerializeField] private float maxGrappleAirSpeed;
     [SerializeField] private float maxRetractSpeed;
     [SerializeField] private float maxTugSpeed;
@@ -49,7 +50,12 @@ public class PlayerController : MonoBehaviour
     public float grappleSpeed;
     [Range(0f, 1f)] public float grappleAirDrag;
     [Header("Grapple Pull")]
+    [SerializeField] private float targetedyBoostVel;
+    [SerializeField] private float targetedxBoostVel;
     [SerializeField] private float grapplePullSpeed;
+    [SerializeField] private float targetingRadius;
+    [SerializeField] private LayerMask enemyMask;
+    [Space(20)]
     [SerializeField] private AimingBehavior aiming;
     [SerializeField] private GrappleHookDrawer grappleDrawer;
     [SerializeField] private LayerMask wallMask;
@@ -64,7 +70,9 @@ public class PlayerController : MonoBehaviour
     private bool canJump = false;
     private Controls controls;
     private GrappleInstance currentGrapple;
+    private Targetable targetedObject;
     public bool grappling { get; private set; }
+    private float attackVelocity;
     private bool pulling = false;
     private void Start()
     {
@@ -72,37 +80,47 @@ public class PlayerController : MonoBehaviour
         controls.Player.Movement.performed += SetMoveAxis;
         controls.Player.Jump.started += StartJump;
         controls.Player.Jump.canceled += EndJump;
-        controls.Player.Action.started += (x) => StartGrapple();
+        controls.Player.Action.started += (x) => CheckForGrapple();
         controls.Player.Action.canceled += (x) => StopGrapple();
-        controls.Player.Action2.started += (x) => StartGrapplePull();
+        controls.Player.Action2.started += (x) => CheckForGrapple();
         controls.Player.Action2.canceled += (x) => StopGrapple();
         controls.Enable();
     }
-    private void StartGrapple()
+    private void CheckForGrapple()
     {
-        if (!Grounded && !grappling)
+        if (!Grounded && !grappling && grappleTimer.TimerEnded)
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, aiming.GetAimDir(), grappleDistance, wallMask);
-            if (hit)
+            RaycastHit2D targetableHit = Physics2D.CircleCast(transform.position, targetingRadius, aiming.GetAimDir(), grappleDistance, enemyMask);
+            if (targetableHit)
             {
-                currentGrapple = new GrappleInstance(Vector2.down, hit.point, hit.distance);
+                targetedObject = targetableHit.collider.GetComponent<Targetable>();
+                StartGrapple(targetedObject.targetPosition.position, Vector2.Distance(transform.position, targetedObject.targetPosition.position));
+                targetedObject.SetGrappledState(true);
+                attackVelocity = Mathf.Sign((targetedObject.targetPosition.position.x - transform.position.x)) * Mathf.Clamp(Mathf.Abs(rb.velocity.x), 1, maxGrappleAirSpeed);
 
-                grappleSpeed = -Mathf.Sign(rb.velocity.x) * (Mathf.Abs(rb.velocity.x) + grappleStartSpeed);
-                grappleDrawer.SetLines(currentGrapple.Position);
-                grappling = true;
-                pulling = false;
-                OnGrappleShoot?.Invoke();
+                pulling = true;
             }
+            else
+            {
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, aiming.GetAimDir(), grappleDistance, wallMask);
+                if (hit)
+                {
+                    StartGrapple(hit.point, hit.distance);
+                    pulling = false;
+                }
+            }
+
         }
     }
-    private void StartGrapplePull()
+    private void StartGrapple(Vector2 grapplePoint, float grappleDist)
     {
-        if (grappling)
-        {
-            StopGrapple();
-        }
-        StartGrapple();
-        pulling = true;
+        currentGrapple = new GrappleInstance(Vector2.down, grapplePoint, grappleDist);
+
+        grappleSpeed = -Mathf.Sign(rb.velocity.x) * (Mathf.Abs(rb.velocity.x) + grappleStartSpeed);
+        grappleDrawer.SetLines(currentGrapple.Position);
+        grappling = true;
+        OnGrappleShoot?.Invoke();
+        grappleTimer.RestartTimer();
     }
     private void GrapplePull()
     {
@@ -113,6 +131,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            StopGrapple();
             pulling = false;
         }
     }
@@ -121,13 +140,26 @@ public class PlayerController : MonoBehaviour
         if (grappling)
         {
             grappling = false;
-            if (rb.velocity.y < 0)
+            if (!pulling || currentGrapple.Distance > minGrappleDist)
             {
-                rb.velocity = new Vector2(rb.velocity.x, 1);
+                if (rb.velocity.y < 0)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, 1);
+                }
+                float vel = -grappleSpeed;
+                vel = Mathf.Clamp(vel, -maxGrappleAirSpeed, maxGrappleAirSpeed);
+                rb.velocity = new Vector2(vel, rb.velocity.y);
             }
-            float vel = -grappleSpeed;
-            vel = Mathf.Clamp(vel, -maxGrappleAirSpeed, maxGrappleAirSpeed);
-            rb.velocity = new Vector2(vel, rb.velocity.y);
+            else
+            {
+                float xVel = Mathf.Sign(attackVelocity) * (Mathf.Abs(attackVelocity) + targetedxBoostVel);
+                xVel = Mathf.Clamp(xVel, -maxGrappleAirSpeed, maxGrappleAirSpeed);
+                rb.velocity = new Vector2(xVel, targetedyBoostVel);
+
+
+                targetedObject.SetGrappledState(false);
+                targetedObject = null;
+            }
             grappleDrawer.ClearLines();
         }
     }
@@ -261,10 +293,13 @@ public class PlayerController : MonoBehaviour
         {
 
             rb.velocity = new Vector2(AccelerationSpeed(MoveAxis, airAcceleration, airDeceleration, airTopSpeed, airFriction), rb.velocity.y);
-
         }
         JumpBehavior();
         velocity = rb.velocity;
+        if (!grappleTimer.TimerEnded)
+        {
+            grappleTimer.UpdateTimer();
+        }
     }
     private bool IsGrounded()
     {
@@ -311,7 +346,6 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// The drag applied while mid air is called in fixed update to prevent framerate dependency
     /// </summary>
-
     private void FixedUpdate()
     {
         if (grappling)

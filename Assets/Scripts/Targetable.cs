@@ -1,0 +1,27 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Targetable : MonoBehaviour
+{
+    public Transform targetPosition;
+    public BoxCollider2D targetingColl;
+    public LayerMask player;
+    public bool IsGrappled { get; private set; }
+
+    public void SetGrappledState(bool state)
+    {
+        IsGrappled = state;
+        if (IsGrappled)
+        {
+            targetingColl.enabled = false;
+        }
+    }
+    private void Update()
+    {
+        if(!IsGrappled && !targetingColl.enabled)
+        {
+            targetingColl.enabled = !Physics2D.BoxCast(transform.position, targetingColl.size, 0f, Vector2.down, 0.01f, player);
+        }
+    }
+}

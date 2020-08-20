@@ -19,7 +19,10 @@ public class GrappleHookDrawer : MonoBehaviour
     }
     private void Start()
     {
-        lineMat.SetTexture("Main_Tex", grappleSprite);
+        if (grappleSprite != null)
+        {
+            lineMat.SetTexture("Main_Tex", grappleSprite);
+        }
     }
     private void OnDestroy()
     {
