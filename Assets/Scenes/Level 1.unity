@@ -128,15 +128,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2841078870359871719, guid: e8de4e7bc2be2d746839c3f59c5d1216,
+        type: 3}
+      propertyPath: xResoultion
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 2841078870359871719, guid: e8de4e7bc2be2d746839c3f59c5d1216,
+        type: 3}
+      propertyPath: yResolution
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 6151752078100493327, guid: e8de4e7bc2be2d746839c3f59c5d1216,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.71
+      value: -5.7
       objectReference: {fileID: 0}
     - target: {fileID: 6151752078100493327, guid: e8de4e7bc2be2d746839c3f59c5d1216,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2
+      value: -0.84
       objectReference: {fileID: 0}
     - target: {fileID: 6151752078100493327, guid: e8de4e7bc2be2d746839c3f59c5d1216,
         type: 3}
@@ -185,33 +195,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6151752078100493552, guid: e8de4e7bc2be2d746839c3f59c5d1216,
         type: 3}
+      propertyPath: m_ForceIntoRT
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6151752078100493552, guid: e8de4e7bc2be2d746839c3f59c5d1216,
+        type: 3}
+      propertyPath: orthographic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6151752078100493552, guid: e8de4e7bc2be2d746839c3f59c5d1216,
+        type: 3}
       propertyPath: orthographic size
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 6151752078100493552, guid: e8de4e7bc2be2d746839c3f59c5d1216,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0
+      value: 0.045252886
       objectReference: {fileID: 0}
     - target: {fileID: 6151752078100493552, guid: e8de4e7bc2be2d746839c3f59c5d1216,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0
+      value: 0.045741327
       objectReference: {fileID: 0}
     - target: {fileID: 6151752078100493552, guid: e8de4e7bc2be2d746839c3f59c5d1216,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 1
+      value: 0.90860695
       objectReference: {fileID: 0}
     - target: {fileID: 6151752078100493552, guid: e8de4e7bc2be2d746839c3f59c5d1216,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6151752078100493552, guid: e8de4e7bc2be2d746839c3f59c5d1216,
-        type: 3}
-      propertyPath: m_ForceIntoRT
-      value: 0
+      value: 0.90851736
       objectReference: {fileID: 0}
     - target: {fileID: 6151752078100493553, guid: e8de4e7bc2be2d746839c3f59c5d1216,
         type: 3}
@@ -227,6 +242,11 @@ PrefabInstance:
         type: 3}
       propertyPath: offsetSpeed
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6151752078100493553, guid: e8de4e7bc2be2d746839c3f59c5d1216,
+        type: 3}
+      propertyPath: min.x
+      value: -5.7
       objectReference: {fileID: 0}
     - target: {fileID: 6151752078100493555, guid: e8de4e7bc2be2d746839c3f59c5d1216,
         type: 3}
@@ -1270,13 +1290,13 @@ MonoBehaviour:
   AllCheckpoints:
   - checkPoint: {fileID: 1571882887}
     checkPointEvent:
-      newCameraX: -4.08
+      newCameraX: -5.7
   - checkPoint: {fileID: 603854395}
     checkPointEvent:
-      newCameraX: 23.12
+      newCameraX: 20.04
   - checkPoint: {fileID: 2027168824}
     checkPointEvent:
-      newCameraX: 80.45
+      newCameraX: 75.48
   currentCheckpoint: {fileID: 0}
 --- !u!4 &1673540665
 Transform:
@@ -1310,7 +1330,7 @@ PrefabInstance:
     - target: {fileID: 5126170100407448196, guid: 526a435516bb8f04ab52c58757b259cc,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -19.7
+      value: -18.35
       objectReference: {fileID: 0}
     - target: {fileID: 5126170100407448196, guid: 526a435516bb8f04ab52c58757b259cc,
         type: 3}

@@ -27,6 +27,7 @@ public class AimingBehavior : MonoBehaviour
     private void Update()
     {
         Vector2 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+        Debug.Log(Camera.main.WorldToScreenPoint(worldPos));
         crosshair.transform.position = new Vector3(worldPos.x, worldPos.y, crosshair.transform.position.z);
 
         gunT.right = GetAimDir();

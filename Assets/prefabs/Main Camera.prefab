@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6151752078100493553}
   - component: {fileID: 6151752078100493324}
   - component: {fileID: 6151752078100493326}
+  - component: {fileID: 2841078870359871719}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -45,7 +46,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.29803923, g: 0.14117648, b: 0.3137255, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -62,17 +63,17 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8
-  m_Depth: -1
+  orthographic size: 9.02
+  m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
-  m_TargetEye: 0
+  m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 0
+  m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 0
@@ -100,10 +101,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerFollowSpeed: 8
   cameraPanSpeed: 4
+  offsetSpeed: 0
   followX: 1
   followY: 1
   reachedApprox: 0.157
-  min: {x: -3.9, y: -1.68}
+  offsetAmount: 0
+  min: {x: -4.29, y: -1.68}
   max: {x: 101.9, y: 11}
 --- !u!114 &6151752078100493324
 MonoBehaviour:
@@ -118,10 +121,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colors:
-  - {r: 0.9843137, g: 0.5176471, b: 0.5176471, a: 0}
-  - {r: 0.7372549, g: 0.25882354, b: 0.32941177, a: 0}
-  - {r: 0.29803923, g: 0.14117648, b: 0.3137255, a: 0}
-  - {r: 1, g: 1, b: 1, a: 0}
+  - {r: 0.9843137, g: 0.5176471, b: 0.5176471, a: 1}
+  - {r: 0.7372549, g: 0.25882354, b: 0.32941177, a: 1}
+  - {r: 0.29803923, g: 0.14117648, b: 0.3137255, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &6151752078100493326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,10 +138,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AssetsPPU: 16
-  m_RefResolutionX: 384
-  m_RefResolutionY: 216
+  m_RefResolutionX: 512
+  m_RefResolutionY: 288
   m_UpscaleRT: 1
   m_PixelSnapping: 0
-  m_CropFrameX: 0
-  m_CropFrameY: 0
+  m_CropFrameX: 1
+  m_CropFrameY: 1
   m_StretchFill: 0
+--- !u!114 &2841078870359871719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6151752078100493555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f1340c9810677e4b96bd43d94464911, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 6151752078100493552}
+  effectObj: {fileID: 4499787071428794817, guid: 7740cb52ebe7ac340b0cc4a4b0974749,
+    type: 3}
+  xResoultion: 16
+  yResolution: 9
+  scale: 4
+  speed: 3
+  currIndex: {x: 0, y: 0}
+  isAnimating: 0

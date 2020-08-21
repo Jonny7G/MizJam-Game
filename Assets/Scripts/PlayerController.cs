@@ -302,6 +302,7 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
+        
         Grounded = IsGrounded();
         if (Grounded)
         {
