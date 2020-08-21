@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector2 groundCheckSize = new Vector2(0.62f, 0.15f);
     [Header("Grapple")]
     [SerializeField] private Timer grappleTimer;
-    [SerializeField] private float maxGrappleAirSpeed;
+    public float maxGrappleAirSpeed;
     [SerializeField] private float maxRetractSpeed;
     [SerializeField] private float maxTugSpeed;
     [SerializeField] private float maxTugAngle;
@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour
 
     private bool jumpPressed = false;
     private bool canJump = false;
-    private Controls controls;
+    [SerializeField]private Controls controls;
     private GrappleInstance currentGrapple;
     private Targetable targetedObject;
     public bool grappling { get; private set; }
@@ -84,8 +84,8 @@ public class PlayerController : MonoBehaviour
         controls.Player.Jump.canceled += EndJump;
         controls.Player.Action.started += (x) => CheckForGrapple();
         controls.Player.Action.canceled += (x) => StopGrapple();
-        controls.Player.Action2.started += (x) => CheckForGrapple();
-        controls.Player.Action2.canceled += (x) => StopGrapple();
+        //controls.Player.Action2.started += (x) => CheckForGrapple();
+        //controls.Player.Action2.canceled += (x) => StopGrapple();
         controls.Enable();
     }
     private void CheckForGrapple()

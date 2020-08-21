@@ -1,24 +1,43 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
-using UnityEngine.UI;
 public class MenuLevel : MonoBehaviour
 {
+    public UnityEvent OnEnter;
     public TMP_Text descriptionText;
-    public Image selectedHighlight;
-    [TextArea]public string description;
+    public SpriteRenderer lockSprite;
+    [TextArea] public string description;
     public bool Unlocked;
-    public bool Selected;
 
-    public void Select(bool isSelected)
+    private Controls controls;
+    private Vector2 moveAxis;
+    private bool entered;
+    private void Start()
     {
-        selectedHighlight.gameObject.SetActive(isSelected);
-        Selected = isSelected;
+        controls = new Controls();
+        controls.Enable();
+        controls.Player.Movement.performed += (x) => { moveAxis = x.ReadValue<Vector2>(); };
     }
     public void SetUnlocked()
     {
         Unlocked = true;
+        lockSprite.enabled = false;
         descriptionText.SetText(description);
+    }
+    private void Update()
+    {
+        if (Unlocked && moveAxis.y > 0 && entered)
+        {
+            OnEnter?.Invoke();
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        entered = true;
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        entered = false;
     }
 }

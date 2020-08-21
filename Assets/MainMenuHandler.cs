@@ -5,43 +5,38 @@ using UnityEngine.SceneManagement;
 public class MainMenuHandler : MonoBehaviour
 {
     public GameProgressData progress;
+    public PlayerController player;
     public List<MenuLevel> allLevels;
-    public MenuLevel selectedLevel;
+    //public MenuLevel selectedLevel;
     private void Start()
     {
-        if (progress.farthestLevel < 1)
+        if (progress.farthestLevel < 0)
         {
-            progress.farthestLevel = 1;
+            progress.farthestLevel = 0;
         }
-        for (int i = 0; i < progress.farthestLevel; i++)
+        for (int i = 0; i <= progress.farthestLevel; i++)
         {
             if (i < allLevels.Count)
             {
                 allLevels[i].SetUnlocked();
             }
         }
-    }
-    public void WasSelected(MenuLevel level)
-    {
-        if (level.Unlocked)
+        if (progress.CurrentLevel > allLevels.Count-1)
         {
-            if (selectedLevel != null)
-                selectedLevel.Select(false);
-
-            selectedLevel = level;
-            selectedLevel.Select(true);
+            progress.CurrentLevel = allLevels.Count - 1;
         }
+        player.transform.position = allLevels[progress.CurrentLevel].transform.position;
     }
-    public void Play()
+    public void Play(MenuLevel level)
     {
-        SceneManager.LoadScene(1);
-        return;
-        if (selectedLevel != null)
+
+        if (level != null)
         {
             for (int i = 0; i < allLevels.Count; i++)
             {
-                if (selectedLevel == allLevels[i])
+                if (level == allLevels[i])
                 {
+                    progress.CurrentLevel = i;
                     SceneManager.LoadScene(i + 1);
                     break;
                 }

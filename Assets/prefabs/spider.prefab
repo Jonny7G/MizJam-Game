@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: 4946215579904039899}
   - component: {fileID: 4946215579904039900}
   m_Layer: 0
-  m_Name: Land effect (1)
+  m_Name: Death Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4960,6 +4960,7 @@ MonoBehaviour:
   targetRot: 65
   amountToEmit: 20
   damageHandler: {fileID: 4946215581245265732}
+  shouldDestroy: 1
 --- !u!1 &4946215580288011022
 GameObject:
   m_ObjectHideFlags: 0

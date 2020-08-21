@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MapBoundary : MonoBehaviour
 {
-    public System.Action<PlayerController> OnPlayerHitBoundary;
+    public System.Action OnPlayerHitBoundary;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -12,7 +12,7 @@ public class MapBoundary : MonoBehaviour
 
         if (player != null)
         {
-            OnPlayerHitBoundary?.Invoke(player);
+            OnPlayerHitBoundary?.Invoke();
         }
     }
 }

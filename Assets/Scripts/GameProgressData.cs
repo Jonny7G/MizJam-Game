@@ -5,4 +5,5 @@ using UnityEngine;
 public class GameProgressData : ScriptableObject
 {
     public int farthestLevel;
+    public int CurrentLevel;
 }

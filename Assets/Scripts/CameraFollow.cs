@@ -24,7 +24,7 @@ public class CameraFollow : MonoBehaviour
     {
         if (reachedMinimum)
         {
-            currOffset = Vector2.Lerp(currOffset, new Vector2(player.rb.velocity.normalized.x * offsetAmount,0), Time.deltaTime * offsetSpeed);
+            currOffset = Vector2.Lerp(currOffset, new Vector2(Mathf.Abs(player.rb.velocity.x)/player.maxGrappleAirSpeed * offsetAmount,0), Time.deltaTime * offsetSpeed);
             Vector2 newPos = GoTowardPosition(playerFollowSpeed, (Vector2)player.transform.position+currOffset);
             newPos = new Vector2(Mathf.Clamp(newPos.x, min.x, max.x), Mathf.Clamp(newPos.y, min.y, max.y));
             transform.position = new Vector3(newPos.x, newPos.y, transform.position.z);

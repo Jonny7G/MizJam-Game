@@ -5,7 +5,7 @@ using UnityEngine;
 public class Damageable : MonoBehaviour
 {
     public int Health;
-    public System.Action OnKill;
+    public System.Action OnKill { get; set; }
     public System.Action OnDamage;
     public void Damage(int damage)
     {
@@ -24,6 +24,7 @@ public class Damageable : MonoBehaviour
     }
     public void Kill()
     {
+        Debug.Log("killed");
         OnKill?.Invoke();
         //Destroy(gameObject);
     }
