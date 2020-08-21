@@ -104,7 +104,7 @@ MonoBehaviour:
   followY: 1
   reachedApprox: 0.157
   min: {x: -3.9, y: -1.68}
-  max: {x: 87.82, y: 11}
+  max: {x: 101.9, y: 11}
 --- !u!114 &6151752078100493324
 MonoBehaviour:
   m_ObjectHideFlags: 0
