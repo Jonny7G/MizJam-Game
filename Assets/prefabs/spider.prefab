@@ -4953,12 +4953,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e12f58cf5078c84c8f5ff9f0e52ed5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableOnStart: []
+  toDisable: {fileID: 4946215581245265730}
   pSystem: {fileID: 4946215579904039898}
+  amountToEmit: 20
   scaler: {fileID: 6699586274343187253}
   xDeathScale: 2
   yDeathScale: 2
   targetRot: 65
-  amountToEmit: 20
   damageHandler: {fileID: 4946215581245265732}
   shouldDestroy: 1
 --- !u!1 &4946215580288011022
@@ -5232,9 +5234,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 4946215580288011057}
   targetingColl: {fileID: 4946215581245265730}
+  shouldDisableColl: 1
   player:
     serializedVersion: 2
     m_Bits: 256
+  alwaysPull: 1
 --- !u!114 &4946215581245265733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5261,7 +5265,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  bounceVel: 15
+  bounceVel: 3
 --- !u!114 &4946215581245265732
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10921b94a01dba34cb500c88fd902452, type: 3}
   m_Name: Game Progress
   m_EditorClassIdentifier: 
-  farthestLevel: 2
-  CurrentLevel: 1
+  farthestLevel: 3
+  CurrentLevel: 2

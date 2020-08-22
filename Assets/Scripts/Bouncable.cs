@@ -17,7 +17,9 @@ public class Bouncable : MonoBehaviour
         {
             if (player.rb.velocity.y < bounceVel)
             {
-                player.rb.velocity = new Vector2(player.rb.velocity.x, bounceVel);
+                Debug.Log("BOUNCIN");
+                player.Jumping = false;
+                player.rb.velocity = new Vector2(player.rb.velocity.x, Mathf.Abs(player.rb.velocity.y)+bounceVel);
             }
             OnBounce?.Invoke();
             OnBounceUE?.Invoke();

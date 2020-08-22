@@ -10226,7 +10226,7 @@ MonoBehaviour:
   grappleDistance: 20
   grapplePullAccel: 30
   grappleDistChangeSpeed: 6
-  minGrappleDist: 1
+  minGrappleDist: 1.5
   maxGrappleSpeed: 25
   grappleSpeed: 0
   grappleAirDrag: 0.995
@@ -10244,6 +10244,7 @@ MonoBehaviour:
     m_Bits: 513
   rb: {fileID: 5126170100407448217}
   velocity: {x: 0, y: 0}
+  gravAngle: 0
 --- !u!114 &5126170100407448216
 MonoBehaviour:
   m_ObjectHideFlags: 0

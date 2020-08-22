@@ -5,6 +5,7 @@ using UnityEngine;
 public class OnDeathEffect : MonoBehaviour
 {
     public List<GameObject> disableOnStart;
+    public Collider2D toDisable;
     public ParticleSystem pSystem;
     public int amountToEmit;
     public ObjectScaleBehavior scaler;
@@ -28,6 +29,10 @@ public class OnDeathEffect : MonoBehaviour
         {
             scaler.SetTargetScale(xDeathScale, yDeathScale);
             scaler.SetTargetRot(targetRot);
+        }
+        if (toDisable != null)
+        {
+            toDisable.enabled = false;
         }
         
     }

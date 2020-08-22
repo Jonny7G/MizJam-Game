@@ -21,9 +21,17 @@ public class Targetable : MonoBehaviour
     }
     private void Update()
     {
-        if(!IsGrappled && !targetingColl.enabled)
+        Damageable dmgble = GetComponent<Damageable>();
+        if(dmgble == null || dmgble.Health > 0)
         {
-            targetingColl.enabled = !Physics2D.BoxCast(transform.position, targetingColl.size, 0f, Vector2.down, 0.01f, player);
+            if (!IsGrappled && !targetingColl.enabled)
+            {
+                targetingColl.enabled = !Physics2D.BoxCast(transform.position, targetingColl.size, 0f, Vector2.down, 0.01f, player);
+            }
+        }
+        else
+        {
+            targetingColl.enabled = false;
         }
     }
 

@@ -69,6 +69,7 @@ public class LevelHandler : MonoBehaviour
     }
     private void RestartAtCheckpoint()
     {
+        Debug.Log("RESTARTING");
         SceneManager.LoadScene(progress.CurrentLevel+1);
     }
     private void EndOfLevel()

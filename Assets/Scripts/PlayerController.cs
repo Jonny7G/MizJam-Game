@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
     public Rigidbody2D rb = default;
     public Vector2 velocity;
     public Vector2 MoveAxis { get; private set; }
-    public bool Jumping { get; private set; }
+    public bool Jumping { get; set; }
     public bool Grounded { get; private set; }
 
     private bool jumpPressed = false;
@@ -153,7 +153,7 @@ public class PlayerController : MonoBehaviour
 
             if (Mathf.Abs(rb.velocity.y) * dirToGrapple.x > grappleStartSpeed)
             {
-                grappleSpeed = Mathf.Abs(rb.velocity.y) * -dirToGrapple.x;
+                grappleSpeed = (Mathf.Abs(rb.velocity.y)+grappleStartSpeed) * -dirToGrapple.x;
             }
             else
             {
@@ -184,17 +184,17 @@ public class PlayerController : MonoBehaviour
         if (grappling)
         {
             grappling = false;
-            if (targetedObject == null || targetedObject.targetPosition.position.y > 0 || currentGrapple.Distance > minGrappleDist + 0.2f)
+            if (targetedObject == null || currentGrapple.Distance > minGrappleDist + 0.5f)
             {
                 rb.velocity = GetEndSwingGrappleVelocity();
             }
             else
             {
+                targetedObject.GetComponent<Damageable>()?.Damage(1);
                 rb.velocity = GetEndTargetedGrappleVelocity();
             }
             if (targetedObject != null)
             {
-                targetedObject.GetComponent<Damageable>()?.Damage(1);
                 targetedObject.SetGrappledState(false);
                 targetedObject = null;
             }
@@ -267,7 +267,7 @@ public class PlayerController : MonoBehaviour
             else if (currentGrapple.Distance > Vector2.Distance(transform.position, currentGrapple.Position))
             {
                 float dist = Vector2.Distance(transform.position, currentGrapple.Position);
-                // currentGrapple.Distance = dist;
+                 currentGrapple.Distance = dist;
                 rb.velocity += gravity * Vector2.down * Time.deltaTime;
             }
 
@@ -283,7 +283,6 @@ public class PlayerController : MonoBehaviour
 
         return -Mathf.Sign(playerAngle);
     }
-    //private float angleDiff;
     public float gravAngle;
     private void HandleSwingVelocity()
     {
@@ -310,7 +309,7 @@ public class PlayerController : MonoBehaviour
                     grappleSpeed += gravDir * Time.deltaTime * grapplePullAccel;
                 }
             }
-            //grappleSpeed *= grappleAirDrag;
+            grappleSpeed *= grappleAirDrag;
             SetGrappleVelocity(Mathf.Sign(grappleSpeed), Mathf.Abs(grappleSpeed));
         }
     }
@@ -328,7 +327,7 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
-
+        Debug.Log(rb.velocity.y);
         Grounded = IsGrounded();
         if (Grounded)
         {
