@@ -82,13 +82,23 @@ public class PlayerController : MonoBehaviour
         controls.Player.Movement.performed += SetMoveAxis;
         controls.Player.Jump.started += StartJump;
         controls.Player.Jump.canceled += EndJump;
-        controls.Player.Action.started += (x) => CheckForGrapple();
-        controls.Player.Action.canceled += (x) => StopGrapple();
-        //controls.Player.Action2.started += (x) => CheckForGrapple();
-        //controls.Player.Action2.canceled += (x) => StopGrapple();
+        controls.Player.Action.started += CheckForGrapple;
+        controls.Player.Action.canceled += CheckForStopGrapple;
         controls.Enable();
     }
-    private void CheckForGrapple()
+    private void OnDestroy()
+    {
+        if (controls != null)
+        {
+            controls.Disable();
+            controls.Player.Movement.performed -= SetMoveAxis;
+            controls.Player.Jump.started -= StartJump;
+            controls.Player.Jump.canceled -= EndJump;
+            controls.Player.Action.started -= CheckForGrapple;
+            controls.Player.Action.canceled -= CheckForStopGrapple;
+        }
+    }
+    private void CheckForGrapple(InputAction.CallbackContext context)
     {
         if (!Grounded && !grappling && grappleTimer.TimerEnded)
         {
@@ -112,6 +122,10 @@ public class PlayerController : MonoBehaviour
             }
 
         }
+    }
+    private void CheckForStopGrapple(InputAction.CallbackContext context)
+    {
+        StopGrapple();
     }
     private void StartGrapple(Vector2 grapplePoint, float grappleDist)
     {
