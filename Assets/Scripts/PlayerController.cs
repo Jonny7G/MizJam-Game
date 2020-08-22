@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour
 
     private bool jumpPressed = false;
     private bool canJump = false;
-    [SerializeField]private Controls controls;
+    [SerializeField] private Controls controls;
     private GrappleInstance currentGrapple;
     private Targetable targetedObject;
     public bool grappling { get; private set; }
@@ -117,7 +117,14 @@ public class PlayerController : MonoBehaviour
                 if (hit)
                 {
                     StartGrapple(hit.point, hit.distance);
-                    pulling = false;
+                    if (hit.point.y < transform.position.y)
+                    {
+                        pulling = true;
+                    }
+                    else
+                    {
+                        pulling = false;
+                    }
                 }
             }
 
@@ -176,17 +183,20 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                if (currentGrapple.Distance > minGrappleDist + 0.2f)
+                if (targetedObject == null || currentGrapple.Distance > minGrappleDist + 0.2f)
                 {
                     rb.velocity = GetEndSwingGrappleVelocity();
                 }
                 else
                 {
                     rb.velocity = GetEndTargetedGrappleVelocity();
-                    targetedObject.GetComponent<Damageable>()?.Damage(1);
                 }
-                targetedObject.SetGrappledState(false);
-                targetedObject = null;
+                if (targetedObject != null)
+                {
+                    targetedObject.GetComponent<Damageable>()?.Damage(1);
+                    targetedObject.SetGrappledState(false);
+                    targetedObject = null;
+                }
             }
             grappleDrawer.ClearLines();
         }
@@ -254,6 +264,7 @@ public class PlayerController : MonoBehaviour
             {
                 float dist = Vector2.Distance(transform.position, currentGrapple.Position);
                 currentGrapple.Distance = dist;
+                rb.velocity += gravity * Vector2.down * Time.deltaTime;
             }
 
         }
@@ -272,35 +283,31 @@ public class PlayerController : MonoBehaviour
     private float angleDiff;
     private void HandleSwingVelocity()
     {
-        float playerAngle = currentGrapple.GetAngle(transform.position);
-        float gravAngle = currentGrapple.GetAngle(currentGrapple.Position + currentGrapple.Distance * Vector2.down);
-        float diff = (gravAngle - playerAngle);
-        float gravDir = Mathf.Sign(diff);
-        angleDiff = Mathf.Abs(diff);
-        grappleSpeed += gravDir * grappleGravity * Time.deltaTime;
-
-        if (Mathf.Sign(MoveAxis.x) != 0) //player caused vel
+        if (currentGrapple.IsOutRange(transform.position))
         {
-            if (Mathf.Abs(grappleSpeed) < maxTugSpeed && Mathf.Abs(diff) < maxTugAngle) //independent tug vel
+            float playerAngle = currentGrapple.GetAngle(transform.position);
+            float gravAngle = currentGrapple.GetAngle(currentGrapple.Position + currentGrapple.Distance * Vector2.down);
+            float diff = (gravAngle - playerAngle);
+            float gravDir = Mathf.Sign(diff);
+            angleDiff = Mathf.Abs(diff);
+            grappleSpeed += gravDir * grappleGravity * Time.deltaTime;
+
+            if (Mathf.Sign(MoveAxis.x) != 0) //player caused vel
             {
-                grappleSpeed -= MoveAxis.x * Time.deltaTime * grapplePullAccel;
+                if (Mathf.Abs(grappleSpeed) < maxTugSpeed && Mathf.Abs(diff) < maxTugAngle) //independent tug vel
+                {
+                    grappleSpeed -= MoveAxis.x * Time.deltaTime * grapplePullAccel;
+                }
+                else if (-Mathf.Sign(MoveAxis.x) == gravDir && Mathf.Abs(diff) < maxSwingAngle) //push with gravity
+                {
+                    grappleSpeed += gravDir * Time.deltaTime * grapplePullAccel;
+                }
             }
-            else if (-Mathf.Sign(MoveAxis.x) == gravDir && Mathf.Abs(diff) < maxSwingAngle) //push with gravity
-            {
-                grappleSpeed += gravDir * Time.deltaTime * grapplePullAccel;
-            }
+            grappleSpeed *= grappleAirDrag;
+            grappleSpeed = Mathf.Clamp(grappleSpeed, -maxGrappleSpeed, maxGrappleSpeed);
+
+            SetGrappleVelocity(Mathf.Sign(grappleSpeed), Mathf.Abs(grappleSpeed));
         }
-        grappleSpeed *= grappleAirDrag;
-        grappleSpeed = Mathf.Clamp(grappleSpeed, -maxGrappleSpeed, maxGrappleSpeed);
-
-        //if (currentGrapple.IsOutRange(transform.position))
-        //{
-        SetGrappleVelocity(Mathf.Sign(grappleSpeed), Mathf.Abs(grappleSpeed));
-        //}
-        //else
-        //{
-
-        //}
     }
     private void SetMoveAxis(InputAction.CallbackContext context)
     {
@@ -316,7 +323,7 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
-        
+
         Grounded = IsGrounded();
         if (Grounded)
         {
@@ -342,11 +349,14 @@ public class PlayerController : MonoBehaviour
                 if ((MoveAxis.y < 0 || currentGrapple.Distance > minGrappleDist) && MoveAxis.x == 0 && angleDiff < 90)
                 {
                     currentGrapple.Distance -= MoveAxis.y * grappleDistChangeSpeed * Time.deltaTime;
+                    grappleSpeed = Mathf.MoveTowards(grappleSpeed, GetGrappleGravDir()*grappleGravity, Time.deltaTime * grappleGravity);
+                    SetGrappleVelocity(Mathf.Sign(grappleSpeed), Mathf.Abs(grappleSpeed));
                     if (angleDiff > 45)
                     {
-                        grappleSpeed += GetGrappleGravDir() * grappleDistChangeSpeed * Time.deltaTime * currentGrapple.Distance;
-                        grappleSpeed = Mathf.Clamp(grappleSpeed, -maxRetractSpeed, maxRetractSpeed);
-                        SetGrappleVelocity(Mathf.Sign(grappleSpeed), Mathf.Abs(grappleSpeed));
+                        
+                        
+                        //grappleSpeed += GetGrappleGravDir() * grappleDistChangeSpeed * Time.deltaTime * currentGrapple.Distance;
+                        //grappleSpeed = Mathf.Clamp(grappleSpeed, -maxRetractSpeed, maxRetractSpeed);
                     }
                     transform.position = currentGrapple.GetPosition(transform.position);
                 }
