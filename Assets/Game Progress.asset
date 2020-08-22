@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Game Progress
   m_EditorClassIdentifier: 
   farthestLevel: 3
-  CurrentLevel: 2
+  CurrentLevel: 3
